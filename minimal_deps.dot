@@ -1,0 +1,6 @@
+digraph conda_dependencies {
+  node [shape=box, style=filled, fillcolor=lightblue];
+  "python" [label="python"];
+  "numpy" [label="numpy"];
+  "pandas" [label="pandas"];
+}

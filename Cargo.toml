@@ -1,0 +1,36 @@
+[package]
+name = "conda-env-inspect"
+version = "0.1.0"
+edition = "2024"
+description = "A CLI tool for inspecting Conda environment files"
+authors = ["Conda Project Team"]
+license = "MIT"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+prettytable-rs = "0.10"
+reqwest = { version = "0.11", features = ["json", "blocking"] }
+tokio = { version = "1", features = ["full"] }
+semver = "1.0"
+env_logger = "0.10"
+log = "0.4"
+rayon = "1.7"
+cached = "0.45"
+indicatif = "0.17"
+pubgrub = "0.2"
+petgraph = "0.6"
+ratatui = "0.23"
+crossterm = "0.26"
+walkdir = "2.3"
+csv = "1.3"
+regex = "1.11.1"
+lazy_static = "1.5.0"
+num_cpus = "1.16.0"
+
+[dev-dependencies]
+tempfile = "3.8"
