@@ -100,24 +100,58 @@ fn parse_name_version_build(spec: &str, package: &mut Package) {
     }
 }
 
-/// Extracts all packages from dependencies
-pub fn extract_packages(env: &CondaEnvironment) -> Vec<Package> {
+/// Extract packages from a parsed conda environment
+pub fn extract_packages(env: &crate::models::CondaEnvironment) -> Vec<crate::models::Package> {
     let mut packages = Vec::new();
-
+    
+    // Extract normal dependencies
     for dep in &env.dependencies {
         match dep {
-            Dependency::Simple(spec) => {
-                packages.push(parse_package_spec(spec));
-            }
-            Dependency::Complex(complex) => {
-                // For now, we don't handle pip packages in this basic version
-                // We could expand this in Phase 2
-                if let Some(name) = &complex.name {
-                    packages.push(parse_package_spec(name));
+            crate::models::Dependency::Simple(spec) => {
+                let parts: Vec<&str> = spec.split('=').collect();
+                let name = parts[0].trim().to_string();
+                let version = if parts.len() > 1 { Some(parts[1].trim().to_string()) } else { None };
+                let is_pinned = version.is_some();
+                
+                packages.push(crate::models::Package {
+                    name,
+                    version,
+                    build: None,
+                    channel: None,
+                    size: None,
+                    is_pinned,
+                    is_outdated: false,
+                    latest_version: None,
+                });
+            },
+            crate::models::Dependency::Complex(complex) => {
+                // Handle pip packages
+                if let Some(pip_pkgs) = &complex.pip {
+                    for pip_spec in pip_pkgs {
+                        let parts: Vec<&str> = pip_spec.split('=').collect();
+                        let name = parts[0].trim().to_string();
+                        let version = if parts.len() > 1 { 
+                            Some(parts[1].trim().to_string()) 
+                        } else { 
+                            None 
+                        };
+                        let is_pinned = version.is_some();
+                        
+                        packages.push(crate::models::Package {
+                            name,
+                            version,
+                            build: None,
+                            channel: Some("pip".to_string()),
+                            size: None,
+                            is_pinned,
+                            is_outdated: false,
+                            latest_version: None,
+                        });
+                    }
                 }
             }
         }
     }
-
+    
     packages
 }

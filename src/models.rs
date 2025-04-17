@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::fmt;
 
 /// Represents a complete Conda environment
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -61,6 +62,23 @@ pub struct Package {
     pub latest_version: Option<String>,
 }
 
+/// Represents a recommendation for environment optimization
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Recommendation {
+    /// Description of the recommendation
+    pub description: String,
+    /// Numerical value associated with the recommendation (e.g., potential size reduction)
+    pub value: String,
+    /// Optional detailed explanation
+    pub details: Option<String>,
+}
+
+impl fmt::Display for Recommendation {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} (Value: {})", self.description, self.value)
+    }
+}
+
 /// Represents the analysis results for an environment
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EnvironmentAnalysis {
@@ -76,5 +94,5 @@ pub struct EnvironmentAnalysis {
     pub outdated_count: usize,
     /// Recommendations for environment optimization
     #[serde(default)]
-    pub recommendations: Vec<String>,
+    pub recommendations: Vec<Recommendation>,
 }

@@ -10,7 +10,7 @@ A CLI tool for inspecting and analyzing Conda environment files, built in Rust.
 - Flag pinned versions of packages
 - Check for outdated packages
 - Calculate total environment size
-- Generate dependency graphs (DOT format)
+- Generate dependency graphs (DOT format and interactive visualization)
 - Provide recommendations for environment optimization
 - Export analysis results in different formats (terminal, JSON, YAML, CSV, Markdown, TOML)
 
@@ -23,6 +23,8 @@ A CLI tool for inspecting and analyzing Conda environment files, built in Rust.
 - Advanced dependency analysis with conflict detection
 - Performance optimizations with parallel processing
 - Progress indicators for long-running operations
+- Visual interactive dependency graph with scrolling navigation
+- Real-time package information from Conda and PyPI APIs
 
 ## Installation
 
@@ -87,8 +89,8 @@ conda-env-inspect recommend -c environment.yml
 # Check for vulnerabilities
 conda-env-inspect vulnerabilities environment.yml
 
-# Interactive TUI mode (under development)
-conda-env-inspect interactive environment.yml
+# Interactive TUI mode with visual dependency graph
+conda-env-inspect interactive --advanced-graph environment.yml
 ```
 
 ## Example
@@ -125,6 +127,21 @@ Recommendations:
 5. 77.8% of packages have pinned versions. This ensures reproducibility but may prevent updates.
 ```
 
+### Interactive Mode with Visual Dependency Graph
+
+```bash
+$ conda-env-inspect interactive --advanced-graph examples/environment.yml
+```
+
+The interactive mode provides:
+- Summary tab with package statistics
+- Package list with detailed information
+- Visual dependency graph with interactive navigation
+  - Arrow keys to scroll through large graphs
+  - Color coding for direct vs. transitive dependencies
+  - Visual indication of dependency relationships
+- Recommendations tab with optimization suggestions
+
 ### Vulnerability Check
 
 ```bash
@@ -149,6 +166,8 @@ You can generate dependency graphs in DOT format that can be visualized with too
 $ conda-env-inspect graph -o deps.dot examples/environment.yml
 $ dot -Tpng deps.dot > deps.png
 ```
+
+Alternatively, use the interactive mode to explore the graph visually without external tools.
 
 ## Advanced Features
 
@@ -211,15 +230,14 @@ conda-env-inspect environment.yml -c -g --graph-output deps.dot
 ### Completed
 - Core functionality for environment analysis
 - Package parsing and metadata extraction
-- Dependency graph generation
+- Dependency graph generation and visualization
 - Recommendations engine
 - Multiple output formats
 - Vulnerability checking
 - Performance optimizations with parallel processing
-
-### In Progress
-- Interactive TUI mode implementation
-- Comprehensive test suite
+- Interactive TUI mode with visual dependency graph
+- Real-time API integration with Conda and PyPI
+- Graph navigation with scrolling for large dependency networks
 
 ### Planned for Future
 - Additional performance optimizations for large environments

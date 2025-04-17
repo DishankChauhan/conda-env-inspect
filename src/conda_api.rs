@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::path::Path;
 use std::fs;
 use std::process::Command;
+use std::collections::HashMap;
 
 use crate::models::Package;
 
@@ -285,4 +286,179 @@ pub fn enrich_packages(packages: &mut Vec<Package>) -> Result<()> {
     
     info!("Package enrichment complete");
     Ok(())
+}
+
+/// Get the latest version of a package from conda-forge
+pub fn get_latest_version(package_name: &str) -> Result<String> {
+    // First try using conda directly
+    match get_latest_version_conda(package_name) {
+        Ok(version) => return Ok(version),
+        Err(e) => debug!("Failed to get latest version via conda: {}", e),
+    }
+    
+    // Fall back to Anaconda API
+    get_latest_version_api(package_name)
+}
+
+/// Get the latest version using conda command
+fn get_latest_version_conda(package_name: &str) -> Result<String> {
+    info!("Getting latest version for {} via conda", package_name);
+    
+    let output = Command::new("conda")
+        .args(["search", package_name, "--json"])
+        .output()
+        .with_context(|| format!("Failed to execute conda search for {}", package_name))?;
+        
+    if !output.status.success() {
+        return Err(anyhow::anyhow!("conda search command failed with status: {}", output.status));
+    }
+        
+    let json: serde_json::Value = serde_json::from_slice(&output.stdout)
+        .with_context(|| format!("Failed to parse JSON output from conda search"))?;
+        
+    // Find the latest version
+    if let Some(packages) = json[package_name].as_array() {
+        // Get all versions
+        let mut versions = Vec::new();
+        for pkg in packages {
+            if let Some(version) = pkg["version"].as_str() {
+                versions.push(version.to_string());
+            }
+        }
+        
+        // Sort versions and get latest (last in sorted array)
+        versions.sort_by(|a, b| {
+            // Try to use semver for comparison if possible
+            match (Version::parse(a), Version::parse(b)) {
+                (Ok(ver_a), Ok(ver_b)) => ver_a.cmp(&ver_b),
+                _ => a.cmp(b) // Fallback to lexicographic ordering
+            }
+        });
+        
+        if let Some(latest) = versions.last() {
+            return Ok(latest.clone());
+        }
+    }
+    
+    Err(anyhow::anyhow!("Failed to find latest version for {}", package_name))
+}
+
+/// Get the latest version using Anaconda API
+fn get_latest_version_api(package_name: &str) -> Result<String> {
+    info!("Getting latest version for {} via API", package_name);
+    
+    let client = Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()?;
+    
+    // Try conda-forge first, then default channels
+    for channel in &["conda-forge", "main"] {
+        let url = format!("https://api.anaconda.org/package/{}/{}", channel, package_name);
+        
+        match client.get(&url).send() {
+            Ok(response) => {
+                if response.status().is_success() {
+                    let json: serde_json::Value = response.json()
+                        .with_context(|| format!("Failed to parse API response for {}", package_name))?;
+                    
+                    if let Some(latest) = json["latest_version"].as_str() {
+                        return Ok(latest.to_string());
+                    }
+                }
+            },
+            Err(e) => debug!("API request to {} failed: {}", url, e),
+        }
+    }
+    
+    // Try PyPI for Python packages
+    let pypi_url = format!("https://pypi.org/pypi/{}/json", package_name);
+    match client.get(&pypi_url).send() {
+        Ok(response) => {
+            if response.status().is_success() {
+                let json: serde_json::Value = response.json()
+                    .with_context(|| format!("Failed to parse PyPI API response for {}", package_name))?;
+                
+                if let Some(version) = json["info"]["version"].as_str() {
+                    return Ok(version.to_string());
+                }
+            }
+        },
+        Err(e) => debug!("PyPI API request failed: {}", e),
+    }
+    
+    Err(anyhow::anyhow!("Could not determine latest version for {}", package_name))
+}
+
+/// Get the size of a package in bytes
+pub fn get_package_size(package_name: &str) -> Result<u64> {
+    // First try using conda directly
+    match get_package_size_conda(package_name) {
+        Ok(size) => return Ok(size),
+        Err(e) => debug!("Failed to get package size via conda: {}", e),
+    }
+    
+    // Fall back to Anaconda API
+    get_package_size_api(package_name)
+}
+
+/// Get package size using conda command
+fn get_package_size_conda(package_name: &str) -> Result<u64> {
+    info!("Getting package size for {} via conda", package_name);
+    
+    let output = Command::new("conda")
+        .args(["search", package_name, "--info", "--json"])
+        .output()
+        .with_context(|| format!("Failed to execute conda search --info for {}", package_name))?;
+        
+    if !output.status.success() {
+        return Err(anyhow::anyhow!("conda search command failed with status: {}", output.status));
+    }
+        
+    let json: serde_json::Value = serde_json::from_slice(&output.stdout)
+        .with_context(|| format!("Failed to parse JSON output from conda search --info"))?;
+        
+    // Extract size information
+    if let Some(packages) = json[package_name].as_array() {
+        for pkg in packages {
+            if let Some(size) = pkg["size"].as_u64() {
+                return Ok(size);
+            }
+        }
+    }
+    
+    Err(anyhow::anyhow!("Failed to get size information for {}", package_name))
+}
+
+/// Get package size using Anaconda API
+fn get_package_size_api(package_name: &str) -> Result<u64> {
+    info!("Getting package size for {} via API", package_name);
+    
+    let client = Client::builder()
+        .timeout(std::time::Duration::from_secs(10))
+        .build()?;
+    
+    // Try conda-forge first, then default channels
+    for channel in &["conda-forge", "main"] {
+        let url = format!("https://api.anaconda.org/package/{}/{}", channel, package_name);
+        
+        match client.get(&url).send() {
+            Ok(response) => {
+                if response.status().is_success() {
+                    let json: serde_json::Value = response.json()
+                        .with_context(|| format!("Failed to parse API response for {}", package_name))?;
+                    
+                    if let Some(files) = json["files"].as_array() {
+                        if let Some(file) = files.first() {
+                            if let Some(size) = file["size"].as_u64() {
+                                return Ok(size);
+                            }
+                        }
+                    }
+                }
+            },
+            Err(e) => debug!("API request to {} failed: {}", url, e),
+        }
+    }
+    
+    Err(anyhow::anyhow!("Could not determine package size for {}", package_name))
 } 
