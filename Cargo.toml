@@ -4,14 +4,13 @@ version = "0.1.0"
 edition = "2024"
 description = "A CLI tool for inspecting Conda environment files"
 authors = ["Conda Project Team"]
-license = "MIT"
 repository = "https://github.com/yourusername/conda-env-inspect"
 homepage = "https://github.com/yourusername/conda-env-inspect"
 documentation = "https://docs.rs/conda-env-inspect"
 keywords = ["conda", "environment", "cli", "rust"]
 categories = ["command-line-utilities", "development-tools::build-utilities"]
 readme = "README.md"
-license-file = "LICENSE"
+license = "MIT"
 
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }
