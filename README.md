@@ -1,6 +1,18 @@
 # conda-env-inspect
 
-A CLI tool for inspecting and analyzing Conda environment files, built in Rust.
+> ⚙️ A blazing-fast CLI tool to analyze and optimize your Conda environments — written in Rust.
+
+Inspect `.yml` and `.conda` files, detect vulnerabilities, visualize dependencies, and get smart optimization tips.
+
+[![Demo](https://user-images.githubusercontent.com/your/demo.gif)](https://github.com/DishankChauhan/conda-env-inspect)
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples and Tutorials](#examples-and-tutorials)
+- [Contribution Guidelines](#contribution-guidelines)
 
 ## Features
 
@@ -27,6 +39,12 @@ A CLI tool for inspecting and analyzing Conda environment files, built in Rust.
 - Real-time package information from Conda and PyPI APIs
 
 ## Installation
+
+### Using Cargo
+
+```bash
+cargo install --git https://github.com/yourusername/conda-env-inspect
+```
 
 ### From Pre-built Binaries
 
@@ -66,7 +84,7 @@ conda-env-inspect -c environment.yml
 # Generate recommendations
 conda-env-inspect -r environment.yml
 
-# Generate dependency graph
+# Generate dependency graph in DOT format
 conda-env-inspect -g --graph-output deps.dot environment.yml
 
 # Export to JSON
@@ -109,7 +127,9 @@ conda-env-inspect interactive --advanced-graph environment.yml
 $ conda-env-inspect examples/environment.yml -c -r
 ```
 
-Output:
+<details>
+<summary>Click to expand output</summary>
+
 ```
 +---------------+---------+-------+---------+--------+----------+
 | Package       | Version | Build | Channel | Pinned | Outdated |
@@ -137,11 +157,11 @@ Recommendations:
 5. 77.8% of packages have pinned versions. This ensures reproducibility but may prevent updates.
 ```
 
+</details>
+
 ### Interactive Mode with Visual Dependency Graph
 
-```bash
-$ conda-env-inspect interactive --advanced-graph examples/environment.yml
-```
+![interactive-dependency-graph](https://user-images.githubusercontent.com/your/graph-demo.gif)
 
 The interactive mode provides:
 - Summary tab with package statistics
@@ -159,6 +179,10 @@ $ conda-env-inspect vulnerabilities examples/environment.yml
 ```
 
 Output:
+
+<details>
+<summary>Click to expand output</summary>
+
 ```
 Found 5 potential security vulnerabilities:
 1. numpy 1.22.3 - Potentially vulnerable due to being significantly outdated (current: 1.22.3, latest: 2.2.4)
@@ -168,16 +192,9 @@ Found 5 potential security vulnerabilities:
 5. pytorch 1.11.0 - Potentially vulnerable due to being significantly outdated (current: 1.11.0, latest: 2.5.1)
 ```
 
-### Dependency Graph
+</details>
 
-You can generate dependency graphs in DOT format that can be visualized with tools like Graphviz:
-
-```bash
-$ conda-env-inspect graph -o deps.dot examples/environment.yml
-$ dot -Tpng deps.dot > deps.png
-```
-
-Alternatively, use the interactive mode to explore the graph visually without external tools.
+- 🔐 Uses [OSV.dev](https://osv.dev), [PyPI advisories](https://pypi.org/security/), and local CVE databases.
 
 ## Contribution Guidelines
 
