@@ -1,0 +1,14 @@
+name: invalid-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - invalid-package
+  - pandas
+  - pip
+  - pip:
+    - requests==2.25.1
+    - flask
+invalid_line 

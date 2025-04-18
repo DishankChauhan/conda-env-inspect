@@ -1,0 +1,7 @@
+name: basic-env
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - numpy
+  - pandas 

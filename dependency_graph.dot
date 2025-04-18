@@ -1,0 +1,24 @@
+digraph conda_dependencies {
+  node [shape=box, style=filled, fillcolor=lightblue];
+  "python" [label="python"];
+  "numpy" [label="numpy"];
+  "pandas" [label="pandas"];
+  "scipy" [label="scipy"];
+  "matplotlib" [label="matplotlib"];
+  "scikit-learn" [label="scikit-learn"];
+  "tensorflow" [label="tensorflow"];
+  "keras" [label="keras"];
+  "jupyterlab" [label="jupyterlab"];
+  "seaborn" [label="seaborn"];
+  "sympy" [label="sympy"];
+  "cython" [label="cython"];
+  "pip" [label="pip"];
+  "requests" [label="requests"];
+  "flask" [label="flask"];
+  "django" [label="django"];
+  "pytest" [label="pytest"];
+  "black" [label="black"];
+  "mypy" [label="mypy"];
+  "pytest" -> "requests";
+  "mypy" -> "pip";
+}

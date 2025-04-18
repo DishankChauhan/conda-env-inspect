@@ -1,0 +1,25 @@
+name: large-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - numpy
+  - pandas
+  - scipy
+  - matplotlib
+  - scikit-learn
+  - tensorflow
+  - keras
+  - jupyterlab
+  - seaborn
+  - sympy
+  - cython
+  - pip
+  - pip:
+    - requests
+    - flask
+    - django
+    - pytest
+    - black
+    - mypy 

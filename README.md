@@ -28,6 +28,10 @@ A CLI tool for inspecting and analyzing Conda environment files, built in Rust.
 
 ## Installation
 
+### From Pre-built Binaries
+
+Pre-built binaries are available for download from the [releases page](https://github.com/yourusername/conda-env-inspect/releases). Download the appropriate binary for your operating system and place it in your PATH.
+
 ### From Source
 
 ```bash
@@ -40,6 +44,10 @@ cargo build --release
 
 # The binary will be available at ./target/release/conda-env-inspect
 ```
+
+### Prerequisites
+
+Ensure you have Rust and Cargo installed. You can install them using [rustup](https://rustup.rs/).
 
 ## Usage
 
@@ -93,7 +101,9 @@ conda-env-inspect vulnerabilities environment.yml
 conda-env-inspect interactive --advanced-graph environment.yml
 ```
 
-## Example
+## Examples and Tutorials
+
+### Example
 
 ```bash
 $ conda-env-inspect examples/environment.yml -c -r
@@ -169,61 +179,17 @@ $ dot -Tpng deps.dot > deps.png
 
 Alternatively, use the interactive mode to explore the graph visually without external tools.
 
-## Advanced Features
+## Contribution Guidelines
 
-### Environment Size Calculation
+We welcome contributions to the project! Please follow these guidelines:
 
-The tool calculates the total size of packages in the environment, giving you insights into how much disk space it consumes.
+1. Fork the repository and create a new branch for your feature or bug fix.
+2. Write clear, concise commit messages.
+3. Ensure your code passes all tests and adheres to the project's coding standards.
+4. Submit a pull request with a detailed description of your changes.
+5. Be responsive to feedback and make necessary revisions.
 
-### Outdated Package Detection
-
-When using the `-c/--check-outdated` flag, the tool will query the Conda repositories to check if any packages have newer versions available.
-
-### Recommendations
-
-Using the `-r/--generate-recommendations` flag, the tool will analyze your environment and provide suggestions for improvement, such as:
-
-- Updating outdated packages
-- Adding or removing version pins for better reproducibility
-- Optimizing environment size
-
-### Vulnerability Detection
-
-Using the `vulnerabilities` command, the tool will check for:
-
-- Known vulnerable versions in a local database
-- Vulnerabilities reported in the OSV (Open Source Vulnerabilities) database
-- Security advisories from PyPI for Python packages
-- Significantly outdated packages that might contain security issues
-
-## Conda Integration
-
-This tool uses real conda commands and APIs to provide accurate information:
-
-1. **Direct Conda Integration**
-   - Uses actual conda commands when available
-   - Falls back to API calls when conda is not installed
-   - Provides accurate dependency resolution from actual metadata
-
-2. **Conda API Integration**
-   - Queries the Anaconda API for package information
-   - Gets real latest versions and package sizes
-   - Performs semantic version comparison for outdated detection
-
-3. **Real Features**
-   - Size calculation using actual file system data (when available)
-   - Dependency resolution from conda metadata
-   - Package recommendations based on real analysis
-
-For full functionality, it's recommended to run within an activated conda environment:
-
-```bash
-# Activate your environment 
-conda activate my-env
-
-# Then run the tool
-conda-env-inspect environment.yml -c -g --graph-output deps.dot
-```
+For any questions or issues, please open an issue on GitHub or contact the maintainers.
 
 ## Project Status
 
