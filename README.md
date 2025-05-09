@@ -48,7 +48,7 @@ cargo install --git https://github.com/yourusername/conda-env-inspect
 
 ### From Pre-built Binaries
 
-Pre-built binaries are available for download from the [releases page](https://github.com/yourusername/conda-env-inspect/releases). Download the appropriate binary for your operating system and place it in your PATH.
+Pre-built binaries are available for download from the [releases page](https://github.com/DishankChauhan/conda-env-inspect). Download the appropriate binary for your operating system and place it in your PATH.
 
 ### From Source
 
