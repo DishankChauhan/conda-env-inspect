@@ -1,6 +1,6 @@
 [package]
 name = "conda-env-inspect"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "A CLI tool for inspecting Conda environment files"
 authors = ["Conda Project Team"]
