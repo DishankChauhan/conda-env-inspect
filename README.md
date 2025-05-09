@@ -43,7 +43,7 @@ Inspect `.yml` and `.conda` files, detect vulnerabilities, visualize dependencie
 ### Using Cargo
 
 ```bash
-cargo install --git https://github.com/yourusername/conda-env-inspect
+cargo install --git https://github.com/DishankChauhan/conda-env-inspect
 ```
 
 ### From Pre-built Binaries
@@ -54,7 +54,7 @@ Pre-built binaries are available for download from the [releases page](https://g
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/conda-env-inspect.git
+git clone https://github.com/DishankChauhan/conda-env-inspect
 cd conda-env-inspect
 
 # Build the project
